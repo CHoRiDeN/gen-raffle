@@ -5,6 +5,52 @@ from genlayer import *
 from dataclasses import dataclass
 import json
 import uuid
+import re
+
+def parse_llm_json_response(result: str, expected_key: str) -> str:
+    """
+    Parse JSON response from LLM with robust error handling and fallback extraction.
+    
+    Args:
+        result: Raw response from LLM
+        expected_key: The key to extract from the JSON response
+    
+    Returns:
+        The value associated with the expected_key
+    
+    Raises:
+        Exception: If JSON parsing and regex extraction both fail
+    """
+    print("Response from LLM: ", result)
+    # Clean and parse the JSON result more robustly
+    cleaned_result = result.strip()
+    # Remove markdown code blocks if present
+    if cleaned_result.startswith("```json"):
+        cleaned_result = cleaned_result[7:]
+    if cleaned_result.startswith("```"):
+        cleaned_result = cleaned_result[3:]
+    if cleaned_result.endswith("```"):
+        cleaned_result = cleaned_result[:-3]
+    cleaned_result = cleaned_result.strip()
+    
+    try:
+        json_result = json.loads(cleaned_result)
+        value = json_result[expected_key]
+        print(f'LLM calculated {expected_key}: {value}')
+        return value
+    except json.JSONDecodeError as e:
+        print(f"JSON parsing error: {e}")
+        print(f"Raw result: {result}")
+        print(f"Cleaned result: {cleaned_result}")
+        # Fallback: try to extract just the value using regex
+        pattern = rf'"{expected_key}"\s*:\s*"([^"]+)"'
+        match = re.search(pattern, cleaned_result)
+        if match:
+            value = match.group(1)
+            print(f'Extracted {expected_key} from regex: {value}')
+            return value
+        else:
+            raise Exception(f"Could not parse JSON response for key '{expected_key}': {result}")
 
 @allow_storage
 @dataclass
@@ -104,10 +150,7 @@ JUDGE:
 
         def leader_fn():
             result = gl.nondet.exec_prompt(task)
-            # Parse the JSON result
-            json_result = json.loads(result.replace("```json", "").replace("```", ""))
-            winner = json_result["best_address"]
-            print('LLM calculated winner address ',winner)
+            winner = parse_llm_json_response(result, "best_address")
             return winner
 
         def validator_fn(
@@ -182,10 +225,7 @@ Respond in JSON:
         """
         def leader_fn():
             result = gl.nondet.exec_prompt(task)
-            # Parse the JSON result
-            json_result = json.loads(result.replace("```json", "").replace("```", ""))
-            score = json_result["score"]
-            print('LLM calculated score ',score)
+            score = parse_llm_json_response(result, "score")
             return score
 
         def validator_fn(

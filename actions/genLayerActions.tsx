@@ -2,6 +2,7 @@
 
 import { createClient, createAccount as createGenLayerAccount, generatePrivateKey } from "genlayer-js";
 import { studionet } from "genlayer-js/chains";
+import { TransactionStatus } from 'genlayer-js/types';
 
 const privateKey = generatePrivateKey();
 
@@ -15,7 +16,30 @@ export async function getRafffleState(contractAddress: any) {
         functionName: 'get_state',
         args: [],
     });
-    console.log("RESULT RAFFLES: ", result);
     return result;
 
+}
+
+export async function submitAnswer(contractAddress: any, answer: string) {
+    console.log("ANSWER: ", answer);
+    console.log("CONTRACT ADDRESS: ", contractAddress);
+    const transactionHash = await client.writeContract({
+        address: contractAddress,
+        functionName: 'add_entry',
+        args: [answer],
+        leaderOnly: true,
+        value: BigInt(0),
+    });
+
+    console.log("TRANSACTION HASH: ", transactionHash);
+
+    const receipt = await client.waitForTransactionReceipt({
+        hash: transactionHash,
+        status: TransactionStatus.ACCEPTED,
+        retries: 20,
+        interval: 2000,
+    });
+
+    console.log("RECEIPT: ", receipt);
+    return receipt;
 }

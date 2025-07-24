@@ -13,11 +13,10 @@ interface RafflePageProps {
 }
 
 export default async function RafflePage({ params }: RafflePageProps) {
-  const { contractAddress } = params;
+  const { contractAddress } = await params;
   const raffleStateMap = await getRafffleState(contractAddress);
   const raffleState: Raffle = convertMapToRaffle(raffleStateMap);
-  console.log("RAFFLE STATE: ", raffleState);
 
 
-  return <RaffleDetailsPage raffle={raffleState} />
+  return <RaffleDetailsPage raffle={raffleState} contractAddress={contractAddress} />
 }
