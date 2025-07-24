@@ -16,17 +16,19 @@ class RaffleAnswer:
 # contract class
 class RaffleContract(gl.Contract):
     raffle_status: str
-    resolution_end_date: str
-    evaluation_criteria: str
-    story_topic: str
+    evaluation_criteria: str #respuesta a "como se elige la mejor respuesta"
+    constraints: str #respuesta a "cuales son las restricciones"
+    title: str #titulo del concurso
+    description: str #descripcion del concurso
     answers: TreeMap[str,RaffleAnswer]
     winner: str
 
     # constructor
-    def __init__(self, evaluation_criteria: str, story_topic: str, resolution_end_date: str):
+    def __init__(self, evaluation_criteria: str, constraints: str, title: str, description: str):
         self.evaluation_criteria = evaluation_criteria
-        self.story_topic = story_topic
-        self.resolution_end_date = resolution_end_date
+        self.constraints = constraints
+        self.title = title
+        self.description = description
         self.raffle_status = "OPEN"
 
     # read methods must be annotated with view
@@ -34,8 +36,9 @@ class RaffleContract(gl.Contract):
     def get_state(self) -> dict:
         return {
             "evaluation_criteria": self.evaluation_criteria,
-            "story_topic": self.story_topic,
-            "resolution_end_date": self.resolution_end_date,
+            "constraints": self.constraints,
+            "title": self.title,
+            "description": self.description,
             "answers": {k: v for k, v in self.answers.items()},
             "winner": self.winner,
             "raffle_status": self.raffle_status
@@ -142,24 +145,28 @@ JUDGE:
 
         address = gl.message.sender_address.as_hex
         evaluation_criteria = self.evaluation_criteria
-        story_topic = self.story_topic
+        title = self.title
+        description = self.description
+        constraints = self.constraints
 
         
             
         task = f"""
-You are an evaluator. Your task is to rate an answer based on a given topic and a criterion.
+You are an evaluator. Your task is to rate an answer for a contest given a title, description, criteria and constraints.
 
 Rules:
-1. If the answer is not related to the given topic at all, return 0.
-2. Otherwise, score from 0 to 100 based on how well the answer matches the criterion:
-   - 0 = does not meet the criterion at all (or unrelated).
-   - 100 = perfectly matches the criterion.
+1. If the answer is not following the constraints, return 0.
+2. Otherwise, score from 0 to 100 based on how well the answer matches the criteria:
+   - 0 = does not meet the criteria at all (or unrelated).
+   - 100 = perfectly matches the criteria.
    - Use intermediate values for partial matches.
 3. Output only a single number (integer or one decimal). Do not add any explanation or text.
 
 Input:
-- Topic: {story_topic}
-- Criterion: {evaluation_criteria}
+- Title: {title}
+- Description: {description}
+- Criteria: {evaluation_criteria}
+- Constraints: {constraints}
 - Answer: {answer}
 
 Output:

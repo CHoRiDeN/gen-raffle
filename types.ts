@@ -7,8 +7,9 @@ export interface RaffleAnswer {
 export interface Raffle {
   answers: Map<string, RaffleAnswer>;
   evaluation_criteria: string;
-  resolution_end_date: string;
-  story_topic: string;
+  constraints: string;
+  title: string;
+  description: string;
   winner: string;
 }
 
@@ -16,7 +17,8 @@ export interface Raffle {
 export interface RaffleWithRecord {
   answers: Record<string, RaffleAnswer>;
   evaluation_criteria: string;
-  resolution_end_date: string;
-  story_topic: string;
+  constraints: string;
+  title: string;
+  description: string;
   winner: string;
 }

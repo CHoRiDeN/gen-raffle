@@ -16,8 +16,9 @@ export function convertMapToRaffle(mapData: any): Raffle {
     return {
       answers,
       evaluation_criteria: mapData.get('evaluation_criteria') || '',
-      resolution_end_date: mapData.get('resolution_end_date') || '',
-      story_topic: mapData.get('story_topic') || '',
+      constraints: mapData.get('constraints') || '',
+      title: mapData.get('title') || '',
+      description: mapData.get('description') || '',
       winner: mapData.get('winner') || ''
     };
   }
