@@ -11,6 +11,7 @@ export interface Raffle {
   title: string;
   description: string;
   winner: string;
+  raffle_status: string;
 }
 
 // Alternative interface using Record instead of Map for better JSON serialization

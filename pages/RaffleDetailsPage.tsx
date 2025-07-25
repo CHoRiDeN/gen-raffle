@@ -13,10 +13,10 @@ export default function RaffleDetailsPage({ raffle, contractAddress }: { raffle:
 
     const handleSubmit = async () => {
         if (!answer.trim()) return;
-        
+
         setIsSubmitting(true);
         setSubmitStatus("idle");
-        
+
         try {
             await submitAnswer(contractAddress, answer.trim());
             setSubmitStatus("success");
@@ -31,7 +31,7 @@ export default function RaffleDetailsPage({ raffle, contractAddress }: { raffle:
         }
     };
 
-  
+
 
     const participantCount = raffle.answers ? raffle.answers.size : 0;
     const hasWinner = raffle.winner && raffle.winner !== '';
@@ -42,29 +42,11 @@ export default function RaffleDetailsPage({ raffle, contractAddress }: { raffle:
         : null;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-100">
-            {/* Header */}
-            <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 px-6 py-4">
-                <div className="max-w-7xl mx-auto flex items-center justify-between">
-                    <div className="flex items-center space-x-8">
-                        <div className="text-purple-600 font-semibold text-xl">RaffleStory*</div>
-                        <nav className="flex items-center space-x-6 text-gray-600">
-                            <span className="text-sm">Raffles</span>
-                            <span className="text-sm">Leaderboard</span>
-                            <span className="text-sm">Explore</span>
-                        </nav>
-                    </div>
-                    <div className="flex items-center space-x-4">
-                        <span className="text-sm text-gray-500">13:13 CEST</span>
-                        <button className="px-4 py-2 text-purple-600 hover:text-purple-700 transition-colors">
-                            Connect Wallet
-                        </button>
-                    </div>
-                </div>
-            </header>
+        <div className="">
+
 
             {/* Main Content */}
-            <div className="max-w-7xl mx-auto px-6 py-8">
+            <div className="max-w-6xl mx-auto px-6 py-8">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Left Panel - Raffle Info Card */}
                     <div className="lg:col-span-1">
@@ -153,9 +135,9 @@ export default function RaffleDetailsPage({ raffle, contractAddress }: { raffle:
                                 </div>
                             </div>
 
-                          
 
-                           
+
+
 
                             {/* About the Raffle */}
                             <div className="mb-6">
@@ -168,62 +150,63 @@ export default function RaffleDetailsPage({ raffle, contractAddress }: { raffle:
                                 </div>
                             </div>
 
-                             {/* Participation Section */}
-                             <div className="bg-gray-50 rounded-lg p-6 mb-6">
-                                <h3 className="text-lg font-semibold text-gray-900 mb-4">Participation</h3>
-                                <p className="text-gray-600 mb-4">
-                                    Welcome! Join this AI-powered story generation contest and showcase your creativity.
-                                </p>
-                                
-                                <div className="space-y-4">
-                                    <div>
-                                        <label htmlFor="story-textarea" className="block text-sm font-medium text-gray-700 mb-2">
-                                            Your answer
-                                        </label>
-                                        <Textarea
-                                            id="story-textarea"
-                                            placeholder="Write your compelling story here... Be creative and showcase your narrative skills!"
-                                            value={answer}
-                                            onChange={(e) => setAnswer(e.target.value)}
-                                            className="min-h-[120px] resize-none"
-                                            disabled={isSubmitting}
-                                        />
-                                        <p className="mt-1 text-xs text-gray-500">
-                                            {answer.length} characters
-                                        </p>
-                                    </div>
-                                    
-                                    <button
-                                        onClick={handleSubmit}
-                                        disabled={isSubmitting || !answer.trim()}
-                                        className="w-full bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                                    >
-                                        {isSubmitting ? (
-                                            <>
-                                                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                                </svg>
-                                                Submitting...
-                                            </>
-                                        ) : (
-                                            "Submit answer"
-                                        )}
-                                    </button>
-                                    
-                                    {submitStatus === "success" && (
-                                        <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-                                            <p className="text-green-700 text-sm">🎉 Story submitted successfully! Your submission is now being processed.</p>
-                                        </div>
-                                    )}
-                                    {submitStatus === "error" && (
-                                        <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                                            <p className="text-red-700 text-sm">❌ Failed to submit story. Please try again.</p>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
+                            {/* Participation Section */}
+                            {raffle.raffle_status === 'OPEN' && (
+                                <div className="bg-gray-50 rounded-lg p-6 mb-6">
+                                    <h3 className="text-lg font-semibold text-gray-900 mb-4">Participation</h3>
+                                    <p className="text-gray-600 mb-4">
+                                        Welcome! Join this AI-powered story generation contest and showcase your creativity.
+                                    </p>
 
+                                    <div className="space-y-4">
+                                        <div>
+                                            <label htmlFor="story-textarea" className="block text-sm font-medium text-gray-700 mb-2">
+                                                Your answer
+                                            </label>
+                                            <Textarea
+                                                id="story-textarea"
+                                                placeholder="Write your compelling story here... Be creative and showcase your narrative skills!"
+                                                value={answer}
+                                                onChange={(e) => setAnswer(e.target.value)}
+                                                className="min-h-[120px] resize-none"
+                                                disabled={isSubmitting}
+                                            />
+                                            <p className="mt-1 text-xs text-gray-500">
+                                                {answer.length} characters
+                                            </p>
+                                        </div>
+
+                                        <button
+                                            onClick={handleSubmit}
+                                            disabled={isSubmitting || !answer.trim()}
+                                            className="w-full bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                                        >
+                                            {isSubmitting ? (
+                                                <>
+                                                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                    </svg>
+                                                    Submitting...
+                                                </>
+                                            ) : (
+                                                "Submit answer"
+                                            )}
+                                        </button>
+
+                                        {submitStatus === "success" && (
+                                            <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                                                <p className="text-green-700 text-sm">🎉 Story submitted successfully! Your submission is now being processed.</p>
+                                            </div>
+                                        )}
+                                        {submitStatus === "error" && (
+                                            <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                                                <p className="text-red-700 text-sm">❌ Failed to submit story. Please try again.</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
                             {/* Winner Section (if applicable) */}
                             {hasWinner && winnerAnswer && (
                                 <div className="bg-green-50 rounded-lg p-6 border border-green-200">
@@ -328,7 +311,7 @@ export default function RaffleDetailsPage({ raffle, contractAddress }: { raffle:
                                                                 </div>
                                                             </div>
 
-                                                            
+
                                                         </div>
 
                                                         {/* Submission Text */}

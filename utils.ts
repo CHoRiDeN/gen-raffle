@@ -19,6 +19,7 @@ export function convertMapToRaffle(mapData: any): Raffle {
       constraints: mapData.get('constraints') || '',
       title: mapData.get('title') || '',
       description: mapData.get('description') || '',
-      winner: mapData.get('winner') || ''
+      winner: mapData.get('winner') || '',
+      raffle_status: mapData.get('raffle_status') || ''
     };
   }
