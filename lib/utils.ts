@@ -1,6 +1,32 @@
-import { clsx, type ClassValue } from "clsx"
+import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
+import crypto from 'crypto';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
+}
+
+
+// Encrypt private key
+export function encryptPrivateKey(privateKey: string, encryptionKey: string): { encrypted: string; iv: string } {
+  const iv = crypto.randomBytes(16);
+  const cipher = crypto.createCipher('aes-256-cbc', encryptionKey);
+  
+  let encrypted = cipher.update(privateKey, 'utf8', 'hex');
+  encrypted += cipher.final('hex');
+  
+  return {
+    encrypted,
+    iv: iv.toString('hex')
+  };
+}
+
+// Decrypt private key
+export function decryptPrivateKey(encryptedPrivateKey: string, iv: string, encryptionKey: string): string {
+  const decipher = crypto.createDecipher('aes-256-cbc', encryptionKey);
+  
+  let decrypted = decipher.update(encryptedPrivateKey, 'hex', 'utf8');
+  decrypted += decipher.final('utf8');
+  
+  return decrypted;
 }

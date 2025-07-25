@@ -1,6 +1,35 @@
 'use client'
 
+import { SignedOut, SignInButton, SignUpButton, SignedIn, UserButton, useUser } from "@clerk/nextjs"
+import { useEffect, useState } from "react"
+import { getUserByClerkId } from "../actions/databaseActions"
+import { WalletIcon } from "lucide-react"
+
 export default function NavBar() {
+    const { user } = useUser()
+    const [walletAddress, setWalletAddress] = useState<string | null>(null)
+    const [loading, setLoading] = useState(false)
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            if (user?.id) {
+                setLoading(true)
+                try {
+                    const dbUser = await getUserByClerkId(user.id)
+                    if (dbUser?.wallet_address) {
+                        setWalletAddress(dbUser.wallet_address)
+                    }
+                } catch (error) {
+                    console.error('Error fetching user data:', error)
+                } finally {
+                    setLoading(false)
+                }
+            }
+        }
+
+        fetchUserData()
+    }, [user?.id])
+
     return (
         <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 px-6 py-4">
             <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -13,10 +42,25 @@ export default function NavBar() {
                     </nav>
                 </div>
                 <div className="flex items-center space-x-4">
-                    <span className="text-sm text-gray-500">13:13 CEST</span>
-                    <button className="px-4 py-2 text-purple-600 hover:text-purple-700 transition-colors">
-                        Connect Wallet
-                    </button>
+                    <SignedOut>
+                        <SignInButton />
+                        <SignUpButton>
+                            <button className="bg-[#6c47ff] text-white rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer">
+                                Sign Up
+                            </button>
+                        </SignUpButton>
+                    </SignedOut>
+                    <SignedIn>
+                        {loading ? (
+                            <span className="text-sm text-gray-400">Loading...</span>
+                        ) : walletAddress ? (
+                            <span className="text-sm text-gray-600 font-mono flex items-center gap-2">
+                                <WalletIcon className="w-4 h-4" />
+                                {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
+                            </span>
+                        ) : null}
+                        <UserButton />
+                    </SignedIn>
                 </div>
             </div>
         </header>)
