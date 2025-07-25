@@ -13,6 +13,7 @@ interface RaffleCardProps {
 }
 
 export default async function RaffleCard({ raffleAddress, dbRaffle }: RaffleCardProps) {
+    
     const raffleStateMap = await getRafffleState(raffleAddress);
     const raffleState: Raffle = convertMapToRaffle(raffleStateMap);
     const participantCount = raffleState.answers ? raffleState.answers.size : 0;

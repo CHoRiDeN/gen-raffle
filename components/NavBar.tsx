@@ -5,31 +5,11 @@ import { useEffect, useState } from "react"
 import { getUserByClerkId } from "../actions/databaseActions"
 import { WalletIcon } from "lucide-react"
 import Link from "next/link"
+import { useUserContext } from "@/contexts/DbUserContext"
 
 export default function NavBar() {
-    const { user } = useUser()
-    const [walletAddress, setWalletAddress] = useState<string | null>(null)
-    const [loading, setLoading] = useState(false)
+    const { dbUser, loading } = useUserContext()
 
-    useEffect(() => {
-        const fetchUserData = async () => {
-            if (user?.id) {
-                setLoading(true)
-                try {
-                    const dbUser = await getUserByClerkId(user.id)
-                    if (dbUser?.wallet_address) {
-                        setWalletAddress(dbUser.wallet_address)
-                    }
-                } catch (error) {
-                    console.error('Error fetching user data:', error)
-                } finally {
-                    setLoading(false)
-                }
-            }
-        }
-
-        fetchUserData()
-    }, [user?.id])
 
     return (
         <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 px-6 py-4">
@@ -49,7 +29,7 @@ export default function NavBar() {
                     </nav>
                 </div>
                 <div className="flex items-center space-x-4">
-                    <SignedOut>
+                <SignedOut>
                         <SignInButton />
                         <SignUpButton>
                             <button className="bg-[#6c47ff] text-white rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer">
@@ -60,10 +40,10 @@ export default function NavBar() {
                     <SignedIn>
                         {loading ? (
                             <span className="text-sm text-gray-400">Loading...</span>
-                        ) : walletAddress ? (
+                        ) : dbUser?.wallet_address ? (
                             <span className="text-sm text-gray-600 font-mono flex items-center gap-2">
                                 <WalletIcon className="w-4 h-4" />
-                                {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
+                                {dbUser.wallet_address.slice(0, 6)}...{dbUser.wallet_address.slice(-4)}
                             </span>
                         ) : null}
                         <UserButton />

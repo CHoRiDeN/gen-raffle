@@ -1,17 +1,20 @@
 'use server'
 
+import { DatabaseUser } from "@/contexts/DbUserContext";
+import { decryptPrivateKey } from "@/lib/utils";
 import { currentUser } from "@clerk/nextjs/server";
 import { createClient, createAccount as createGenLayerAccount, generatePrivateKey } from "genlayer-js";
 import { studionet } from "genlayer-js/chains";
-import { TransactionStatus } from 'genlayer-js/types';
+import { Hash } from 'genlayer-js/types';
 
-const privateKey = generatePrivateKey();
 
-// Create account with specific private key
-const account = createGenLayerAccount(privateKey);
-const client = createClient({ chain: studionet, account });
 
-export async function getRafffleState(contractAddress: any) {
+
+
+export async function getRafffleState(contractAddress: any, dbUser: DatabaseUser) {
+    const privateKey = generatePrivateKey();
+    const account = createGenLayerAccount(privateKey);
+    const client = createClient({ chain: studionet, account });
     const result = await client.readContract({
         address: contractAddress,
         functionName: 'get_state',
@@ -21,11 +24,12 @@ export async function getRafffleState(contractAddress: any) {
 
 }
 
-export async function submitAnswer(contractAddress: any, answer: string) {
+export async function submitAnswer(contractAddress: any, answer: string, dbUser: DatabaseUser) {
     const clerkUser = await currentUser();
     if (!clerkUser) {
         throw new Error("User not found");
     }
+    const client = createClientFromDbUser(dbUser);
     const transactionHash = await client.writeContract({
         address: contractAddress,
         functionName: 'add_entry',
@@ -36,13 +40,22 @@ export async function submitAnswer(contractAddress: any, answer: string) {
 
     console.log("TRANSACTION HASH: ", transactionHash);
 
-    const receipt = await client.waitForTransactionReceipt({
-        hash: transactionHash,
-        status: TransactionStatus.ACCEPTED,
-        retries: 20,
-        interval: 1000,
-    });
+    return transactionHash;
+}
 
-    console.log("RECEIPT: ", receipt);
-    return receipt;
+export async function getTransaction(transactionHash: Hash, dbUser: DatabaseUser) {
+    const client = createClientFromDbUser(dbUser);
+    const transaction = await client.getTransaction({
+        hash: transactionHash,
+    });
+    return transaction;
+}
+
+function createClientFromDbUser(dbUser: DatabaseUser) {
+    const encryptionKey = process.env.ENCRYPTION_KEY || 'default-key-change-in-production';
+    const decryptedPrivateKey = decryptPrivateKey(dbUser.encrypted_private_key as `0x${string}`, dbUser.iv as `0x${string}`, encryptionKey);
+    const account = createGenLayerAccount(decryptedPrivateKey as `0x${string}`);
+    console.log("ACCOUNT: ", account);
+    const client = createClient({ chain: studionet, account });
+    return client;
 }
