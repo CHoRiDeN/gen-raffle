@@ -5,12 +5,14 @@ import { convertMapToRaffle } from "@/utils";
 import { submitAnswer } from "@/actions/genLayerActions";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
+import { SignedIn, SignedOut, useUser } from "@clerk/nextjs";
+import { currentUser } from "@clerk/nextjs/server";
+import Avvvatars from "avvvatars-react";
 
 export default function RaffleDetailsPage({ raffle, contractAddress }: { raffle: Raffle; contractAddress: string }) {
     const [answer, setAnswer] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
-    const clerk_id = "1234";
 
     const handleSubmit = async () => {
         if (!answer.trim()) return;
@@ -18,8 +20,11 @@ export default function RaffleDetailsPage({ raffle, contractAddress }: { raffle:
         setIsSubmitting(true);
         setSubmitStatus("idle");
 
+
+
+
         try {
-            await submitAnswer(contractAddress, answer.trim(), clerk_id);
+            await submitAnswer(contractAddress, answer.trim());
             setSubmitStatus("success");
             setAnswer("");
             // Optionally refresh the page or update the raffle state
@@ -39,9 +44,11 @@ export default function RaffleDetailsPage({ raffle, contractAddress }: { raffle:
 
     // Find the winner's answer
     const winnerAnswer = hasWinner && raffle.answers
-        ? Array.from(raffle.answers.values()).find(answer => answer.address === raffle.winner)
+        ? Array.from(raffle.answers.values()).find(answer => answer.clerk_id === raffle.winner)
         : null;
 
+
+    console.log(raffle);
     return (
         <div className="">
 
@@ -152,62 +159,74 @@ export default function RaffleDetailsPage({ raffle, contractAddress }: { raffle:
                             </div>
 
                             {/* Participation Section */}
-                            {raffle.raffle_status === 'OPEN' && (
+                            <SignedIn>
+                                {raffle.raffle_status === 'OPEN' && (
+                                    <div className="bg-gray-50 rounded-lg p-6 mb-6">
+                                        <h3 className="text-lg font-semibold text-gray-900 mb-4">Participation</h3>
+                                        <p className="text-gray-600 mb-4">
+                                            Welcome! Join this AI-powered story generation contest and showcase your creativity.
+                                        </p>
+
+                                        <div className="space-y-4">
+                                            <div>
+                                                <label htmlFor="story-textarea" className="block text-sm font-medium text-gray-700 mb-2">
+                                                    Your answer
+                                                </label>
+                                                <Textarea
+                                                    id="story-textarea"
+                                                    placeholder="Write your compelling story here... Be creative and showcase your narrative skills!"
+                                                    value={answer}
+                                                    onChange={(e) => setAnswer(e.target.value)}
+                                                    className="min-h-[120px] resize-none"
+                                                    disabled={isSubmitting}
+                                                />
+                                                <p className="mt-1 text-xs text-gray-500">
+                                                    {answer.length} characters
+                                                </p>
+                                            </div>
+
+                                            <button
+                                                onClick={handleSubmit}
+                                                disabled={isSubmitting || !answer.trim()}
+                                                className="w-full bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                                            >
+                                                {isSubmitting ? (
+                                                    <>
+                                                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                        </svg>
+                                                        Submitting...
+                                                    </>
+                                                ) : (
+                                                    "Submit answer"
+                                                )}
+                                            </button>
+
+                                            {submitStatus === "success" && (
+                                                <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                                                    <p className="text-green-700 text-sm">🎉 Story submitted successfully! Your submission is now being processed.</p>
+                                                </div>
+                                            )}
+                                            {submitStatus === "error" && (
+                                                <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                                                    <p className="text-red-700 text-sm">❌ Failed to submit story. Please try again.</p>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+
+                            </SignedIn>
+                            <SignedOut>
                                 <div className="bg-gray-50 rounded-lg p-6 mb-6">
                                     <h3 className="text-lg font-semibold text-gray-900 mb-4">Participation</h3>
                                     <p className="text-gray-600 mb-4">
-                                        Welcome! Join this AI-powered story generation contest and showcase your creativity.
+                                        Please sign in to participate in the raffle.
                                     </p>
-
-                                    <div className="space-y-4">
-                                        <div>
-                                            <label htmlFor="story-textarea" className="block text-sm font-medium text-gray-700 mb-2">
-                                                Your answer
-                                            </label>
-                                            <Textarea
-                                                id="story-textarea"
-                                                placeholder="Write your compelling story here... Be creative and showcase your narrative skills!"
-                                                value={answer}
-                                                onChange={(e) => setAnswer(e.target.value)}
-                                                className="min-h-[120px] resize-none"
-                                                disabled={isSubmitting}
-                                            />
-                                            <p className="mt-1 text-xs text-gray-500">
-                                                {answer.length} characters
-                                            </p>
-                                        </div>
-
-                                        <button
-                                            onClick={handleSubmit}
-                                            disabled={isSubmitting || !answer.trim()}
-                                            className="w-full bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                                        >
-                                            {isSubmitting ? (
-                                                <>
-                                                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                                    </svg>
-                                                    Submitting...
-                                                </>
-                                            ) : (
-                                                "Submit answer"
-                                            )}
-                                        </button>
-
-                                        {submitStatus === "success" && (
-                                            <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-                                                <p className="text-green-700 text-sm">🎉 Story submitted successfully! Your submission is now being processed.</p>
-                                            </div>
-                                        )}
-                                        {submitStatus === "error" && (
-                                            <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                                                <p className="text-red-700 text-sm">❌ Failed to submit story. Please try again.</p>
-                                            </div>
-                                        )}
-                                    </div>
                                 </div>
-                            )}
+                            </SignedOut>
+
                             {/* Winner Section (if applicable) */}
                             {hasWinner && winnerAnswer && (
                                 <div className="bg-green-50 rounded-lg p-6 border border-green-200">
@@ -262,13 +281,6 @@ export default function RaffleDetailsPage({ raffle, contractAddress }: { raffle:
 
                                     <div className="space-y-4">
                                         {Array.from(raffle.answers.entries())
-                                            .sort(([, a], [, b]) => {
-                                                // Sort by score (descending), then by address
-                                                const scoreA = parseFloat(a.score) || 0;
-                                                const scoreB = parseFloat(b.score) || 0;
-                                                return scoreB - scoreA;
-                                                
-                                            })
                                             .map(([key, answer], index) => {
                                                 const rank = index + 1;
                                                 const isWinner = answer.address === raffle.winner;
@@ -281,27 +293,17 @@ export default function RaffleDetailsPage({ raffle, contractAddress }: { raffle:
                                                         <div className="flex items-start justify-between mb-3">
                                                             <div className="flex items-center space-x-3">
                                                                 {/* Rank Badge */}
-                                                                <div className="w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
-                                                                    #{rank}
-                                                                </div>
+                                                                <Avvvatars value={answer.name} style="shape" size={24} />
 
-                                                                {/* Address */}
+
+                                                                {/* Created at */}
                                                                 <div className="flex items-center space-x-2">
-                                                                    <code className="text-sm font-mono text-gray-700">
-                                                                        {answer.address.slice(0, 6)}...{answer.address.slice(-4)}
-                                                                    </code>
+                                                                    <span className="text-sm font-medium text-gray-700">
+                                                                        {answer.created_at}
+                                                                    </span>
 
-                                                                    {/* Copy Button */}
-                                                                    <button
-                                                                        className="text-gray-400 hover:text-gray-600 transition-colors"
-                                                                        onClick={() => navigator.clipboard.writeText(answer.address)}
-                                                                        title="Copy address"
-                                                                    >
-                                                                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                                                            <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" />
-                                                                            <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" />
-                                                                        </svg>
-                                                                    </button>
+
+
 
                                                                     {/* Trophy for winner */}
                                                                     {isWinner && (
@@ -309,6 +311,14 @@ export default function RaffleDetailsPage({ raffle, contractAddress }: { raffle:
                                                                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                                                         </svg>
                                                                     )}
+                                                                </div>
+
+
+                                                                {/* Name */}
+                                                                <div className="flex items-center space-x-2">
+                                                                    <span className="text-sm font-medium text-gray-700">
+                                                                        {answer.name}
+                                                                    </span>
                                                                 </div>
                                                             </div>
 

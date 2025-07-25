@@ -35,6 +35,7 @@ model Raffle {
   creator_id      Int
   contract_address String  @unique @db.VarChar(42)  // Ethereum address length - mandatory and unique
   created_at      DateTime @default(now())
+  image_url       String   @default("/images/raffles/1.png") @db.VarChar(255)
   
   // Relations
   creator         User     @relation(fields: [creator_id], references: [id], onDelete: Cascade)

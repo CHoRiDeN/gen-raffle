@@ -1,10 +1,11 @@
-import { getRaffles } from "@/actions/databaseActions";
+import { getDBRaffles } from "@/actions/databaseActions";
 import RaffleCard from "@/components/RaffleCard";
 import RaffleCardSkeleton from "@/components/skeletons/RaffleCardSkeleton";
 import { Suspense } from "react";
 
 export default async function RafflesPage() {
-    const raffles = await getRaffles();
+    const raffles = await getDBRaffles();
+    console.log(raffles);
     return (
         <div className="min-h-screen py-8">
             <div className="max-w-2xl mx-auto px-6">

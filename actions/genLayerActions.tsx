@@ -1,5 +1,6 @@
 'use server'
 
+import { currentUser } from "@clerk/nextjs/server";
 import { createClient, createAccount as createGenLayerAccount, generatePrivateKey } from "genlayer-js";
 import { studionet } from "genlayer-js/chains";
 import { TransactionStatus } from 'genlayer-js/types';
@@ -20,11 +21,15 @@ export async function getRafffleState(contractAddress: any) {
 
 }
 
-export async function submitAnswer(contractAddress: any, answer: string, clerk_id: string) {
+export async function submitAnswer(contractAddress: any, answer: string) {
+    const clerkUser = await currentUser();
+    if (!clerkUser) {
+        throw new Error("User not found");
+    }
     const transactionHash = await client.writeContract({
         address: contractAddress,
         functionName: 'add_entry',
-        args: [answer, clerk_id],
+        args: [answer, clerkUser.id, clerkUser.firstName || "Anonymous"],
         leaderOnly: true,
         value: BigInt(0),
     });

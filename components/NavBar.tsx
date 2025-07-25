@@ -4,6 +4,7 @@ import { SignedOut, SignInButton, SignUpButton, SignedIn, UserButton, useUser } 
 import { useEffect, useState } from "react"
 import { getUserByClerkId } from "../actions/databaseActions"
 import { WalletIcon } from "lucide-react"
+import Link from "next/link"
 
 export default function NavBar() {
     const { user } = useUser()
@@ -36,9 +37,15 @@ export default function NavBar() {
                 <div className="flex items-center space-x-8">
                     <div className="text-purple-600 font-semibold text-xl">RaffleStory*</div>
                     <nav className="flex items-center space-x-6 text-gray-600">
-                        <span className="text-sm">Raffles</span>
-                        <span className="text-sm">Leaderboard</span>
-                        <span className="text-sm">Explore</span>
+                        <Link href="/raffles">
+                            <span className="text-sm">Raffles</span>
+                        </Link>
+                        <Link href="/leaderboard">
+                            <span className="text-sm">Leaderboard</span>
+                        </Link>
+                        <Link href="/explore">
+                            <span className="text-sm">Explore</span>
+                        </Link>
                     </nav>
                 </div>
                 <div className="flex items-center space-x-4">

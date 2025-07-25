@@ -4,12 +4,12 @@ import Image from "next/image";
 import { getRafffleState } from "@/actions/genLayerActions";
 import { Raffle } from "@/types";
 import { convertMapToRaffle } from "@/utils";
-import { RaffleWithCreator } from "@/actions/databaseActions";
+import { DatabaseRaffleWithCreator } from "@/actions/databaseActions";
 import { Badge } from "./ui/badge";
 
 interface RaffleCardProps {
     raffleAddress: string;
-    dbRaffle: RaffleWithCreator;
+    dbRaffle: DatabaseRaffleWithCreator;
 }
 
 export default async function RaffleCard({ raffleAddress, dbRaffle }: RaffleCardProps) {
@@ -51,7 +51,7 @@ export default async function RaffleCard({ raffleAddress, dbRaffle }: RaffleCard
                     </div>
                 </div>
                 <div className="w-[120px] aspect-square bg-gray-200 rounded-md overflow-hidden">
-                    <Image src="/images/raffles/1.png" alt={raffleState.title} width={120} height={120} className="object-cover" />
+                    <Image src={dbRaffle.image_url} alt={raffleState.title} width={120} height={120} className="object-cover" />
                 </div>
             </div>
         </Link>

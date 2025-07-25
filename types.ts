@@ -3,6 +3,8 @@ export interface RaffleAnswer {
   answer: string;
   score: string;
   clerk_id: string;
+  name: string;
+  created_at: string;
 }
 
 export interface Raffle {

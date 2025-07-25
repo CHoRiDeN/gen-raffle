@@ -8,11 +8,12 @@ function isValidEthereumAddress(address: string): boolean {
 }
 
 // Type definitions for better type safety
-export interface RaffleWithCreator {
+export interface DatabaseRaffleWithCreator {
   id: number
   creator_id: number
   contract_address: string
   created_at: Date
+  image_url: string
   creator: {
     id: number
     name: string
@@ -24,7 +25,7 @@ export interface RaffleWithCreator {
 /**
  * Get all raffles with their creator information
  */
-export async function getRaffles(): Promise<RaffleWithCreator[]> {
+export async function getDBRaffles(): Promise<DatabaseRaffleWithCreator[]> {
   try {
     const raffles = await prisma.raffle.findMany({
       include: {
@@ -52,7 +53,7 @@ export async function getRaffles(): Promise<RaffleWithCreator[]> {
 /**
  * Get a specific raffle by contract address
  */
-export async function getRaffleByContractAddress(contractAddress: string): Promise<RaffleWithCreator | null> {
+export async function getRaffleByContractAddress(contractAddress: string): Promise<DatabaseRaffleWithCreator | null> {
   try {
     const raffle = await prisma.raffle.findUnique({
       where: {
@@ -80,7 +81,7 @@ export async function getRaffleByContractAddress(contractAddress: string): Promi
 /**
  * Create a new raffle
  */
-export async function createRaffle(creatorId: number, contractAddress: string): Promise<RaffleWithCreator> {
+export async function createRaffle(creatorId: number, contractAddress: string): Promise<DatabaseRaffleWithCreator> {
   try {
     // Validate required fields
     if (!contractAddress || contractAddress.trim() === '') {

@@ -6,6 +6,7 @@ from dataclasses import dataclass
 import json
 import uuid
 import re
+from datetime import datetime
 
 def parse_llm_json_response(result: str, expected_key: str) -> str:
     """
@@ -58,6 +59,8 @@ class RaffleAnswer:
     answer: str
     clerk_id: str
     score: str
+    created_at: str
+    name: str
 
 # contract class
 class RaffleContract(gl.Contract):
@@ -115,11 +118,11 @@ SYSTEM:
 You are the Raffle Judge. You will receive the following inputs:
   • “criteria”: the dimension to score by (e.g. “funniest”, “most interesting”, “most curious”).  
   • “story_topic”: the prompt or call participants responded to (e.g. “Tell me your funniest pizza‑eating story.”).  
-  • “answers”: a list of participant submissions, each containing an “answer” and an “address”.
+  • “answers”: a list of participant submissions, each containing an “answer” and an “clerk_id”.
 
 Respond in JSON:
 {{
-    "best_address": str
+    "best_clerk_id": str
 }}
 It is mandatory that you respond only using the JSON format above,
 nothing else. Don't include any other words or characters,
@@ -137,7 +140,7 @@ Your task:
 3. Selection:
    - Determine the “answer” with the highest score. In case of a tie, select the first one in the list.
 4. Output:
-   - Return the “address” of the best “answer”.
+   - Return the “clerk_id” of the best “answer”.
 
 USER:
 criteria = {evaluation_criteria}  
@@ -150,7 +153,7 @@ JUDGE:
 
         def leader_fn():
             result = gl.nondet.exec_prompt(task)
-            winner = parse_llm_json_response(result, "best_address")
+            winner = parse_llm_json_response(result, "best_clerk_id")
             return winner
 
         def validator_fn(
@@ -181,7 +184,7 @@ JUDGE:
 
     @gl.public.write
     def add_entry(
-        self, answer: str, clerk_id: str
+        self, answer: str, clerk_id: str, name: str
     ) -> None:
         if self.raffle_status == "CLOSED":
             raise Exception("Raffle is already closed")
@@ -247,4 +250,6 @@ Respond in JSON:
 
         print('result score general',result)
 
-        self.answers[address] = RaffleAnswer(answer=answer, clerk_id=clerk_id, score=str(result))
+        today = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        self.answers[address] = RaffleAnswer(answer=answer, clerk_id=clerk_id, score=str(result), created_at=today, name=name)
