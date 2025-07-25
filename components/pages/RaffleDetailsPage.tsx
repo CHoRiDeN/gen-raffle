@@ -4,7 +4,7 @@ import { Raffle } from "@/types";
 import { submitAnswer, getTransaction } from "@/actions/genLayerActions";
 import { Textarea } from "@/components/ui/textarea";
 import { useState, useEffect } from "react";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { SignedIn, SignedOut, useUser } from "@clerk/nextjs";
 import Avvvatars from "avvvatars-react";
 import { Hash, TransactionStatus } from "genlayer-js/types";
 import { useUserContext } from "@/contexts/DbUserContext";
@@ -16,6 +16,7 @@ export default function RaffleDetailsPage({ raffle, contractAddress }: { raffle:
     const [transactionHash, setTransactionHash] = useState<string | null>(null);
     const [transactionStatus, setTransactionStatus] = useState<string>("");
     const { dbUser } = useUserContext();
+    const { user: clerkUser } = useUser();
 
     const handleSubmit = async () => {
         if (!answer.trim()) return;
@@ -26,10 +27,10 @@ export default function RaffleDetailsPage({ raffle, contractAddress }: { raffle:
         setTransactionStatus("");
 
         try {
-            if (!dbUser) {
+            if (!dbUser || !clerkUser) {
                 throw new Error("User not found or not logged in");
             }
-            const hash = await submitAnswer(contractAddress, answer.trim(), dbUser);
+            const hash = await submitAnswer(contractAddress, answer.trim(), dbUser, clerkUser!.id, clerkUser!.firstName || "Anonymous");
             setTransactionHash(hash);
             setSubmitStatus("success");
             setAnswer("");
@@ -79,7 +80,7 @@ export default function RaffleDetailsPage({ raffle, contractAddress }: { raffle:
 
         // Cleanup interval on unmount or when transactionHash changes
         return () => clearInterval(interval);
-    }, [transactionHash]);
+    }, [transactionHash, dbUser]);
 
     const participantCount = raffle.answers ? raffle.answers.size : 0;
     const hasWinner = raffle.winner && raffle.winner !== '';
@@ -337,9 +338,8 @@ export default function RaffleDetailsPage({ raffle, contractAddress }: { raffle:
 
                                     <div className="space-y-4">
                                         {Array.from(raffle.answers.entries())
-                                            .map(([key, answer], index) => {
-                                                const rank = index + 1;
-                                                const isWinner = answer.address === raffle.winner;
+                                            .map(([key, answer]) => {
+                                                const isWinner = answer.clerk_id === raffle.winner;
 
                                                 return (
                                                     <div

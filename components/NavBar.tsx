@@ -1,8 +1,6 @@
 'use client'
 
-import { SignedOut, SignInButton, SignUpButton, SignedIn, UserButton, useUser } from "@clerk/nextjs"
-import { useEffect, useState } from "react"
-import { getUserByClerkId } from "../actions/databaseActions"
+import { SignedOut, SignInButton, SignUpButton, SignedIn, UserButton } from "@clerk/nextjs"
 import { WalletIcon } from "lucide-react"
 import Link from "next/link"
 import { useUserContext } from "@/contexts/DbUserContext"

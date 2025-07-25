@@ -4,8 +4,7 @@ import { WebhookEvent } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/db';
 import { NextResponse } from 'next/server';
 import { encryptPrivateKey } from '@/lib/utils';
-import crypto from 'crypto';
-import { generatePrivateKey, createClient, createAccount } from 'genlayer-js';
+import { generatePrivateKey, createAccount } from 'genlayer-js';
 
 
 export async function POST(req: Request) {

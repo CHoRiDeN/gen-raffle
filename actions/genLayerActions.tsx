@@ -2,7 +2,6 @@
 
 import { DatabaseUser } from "@/contexts/DbUserContext";
 import { decryptPrivateKey } from "@/lib/utils";
-import { currentUser } from "@clerk/nextjs/server";
 import { createClient, createAccount as createGenLayerAccount, generatePrivateKey } from "genlayer-js";
 import { studionet } from "genlayer-js/chains";
 import { Hash } from 'genlayer-js/types';
@@ -11,7 +10,7 @@ import { Hash } from 'genlayer-js/types';
 
 
 
-export async function getRafffleState(contractAddress: any, dbUser: DatabaseUser) {
+export async function getRafffleState(contractAddress: any) {
     const privateKey = generatePrivateKey();
     const account = createGenLayerAccount(privateKey);
     const client = createClient({ chain: studionet, account });
@@ -24,16 +23,12 @@ export async function getRafffleState(contractAddress: any, dbUser: DatabaseUser
 
 }
 
-export async function submitAnswer(contractAddress: any, answer: string, dbUser: DatabaseUser) {
-    const clerkUser = await currentUser();
-    if (!clerkUser) {
-        throw new Error("User not found");
-    }
+export async function submitAnswer(contractAddress: any, answer: string, dbUser: DatabaseUser, clerkUserId: string, firstName: string) {
     const client = createClientFromDbUser(dbUser);
     const transactionHash = await client.writeContract({
         address: contractAddress,
         functionName: 'add_entry',
-        args: [answer, clerkUser.id, clerkUser.firstName || "Anonymous"],
+        args: [answer, clerkUserId, firstName],
         leaderOnly: true,
         value: BigInt(0),
     });
@@ -55,7 +50,6 @@ function createClientFromDbUser(dbUser: DatabaseUser) {
     const encryptionKey = process.env.ENCRYPTION_KEY || 'default-key-change-in-production';
     const decryptedPrivateKey = decryptPrivateKey(dbUser.encrypted_private_key as `0x${string}`, dbUser.iv as `0x${string}`, encryptionKey);
     const account = createGenLayerAccount(decryptedPrivateKey as `0x${string}`);
-    console.log("ACCOUNT: ", account);
     const client = createClient({ chain: studionet, account });
     return client;
 }

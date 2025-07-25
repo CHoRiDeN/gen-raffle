@@ -1,7 +1,7 @@
 import { getRafffleState } from "@/actions/genLayerActions";
 import { Raffle } from "@/types";
 import { convertMapToRaffle } from "@/utils";
-import RaffleDetailsPage from "@/pages/RaffleDetailsPage";
+import RaffleDetailsPage from "@/components/pages/RaffleDetailsPage";
 
 
 import type { Metadata } from "next";
@@ -19,9 +19,9 @@ export async function generateMetadata({ params }: RafflePageProps): Promise<Met
 
 
 interface RafflePageProps {
-  params: {
+  params: Promise<{
     contractAddress: string;
-  };
+  }>;
 }
 
 export default async function RafflePage({ params }: RafflePageProps) {

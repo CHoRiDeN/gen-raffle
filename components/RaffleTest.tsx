@@ -1,12 +1,43 @@
 'use client'
 
 import { useState } from 'react'
-import { createRaffle, testEthereumAddressStorage, checkContractAddressExists, getRaffleByContractAddressSafe } from '@/actions/databaseActions'
+import { createRaffle, testEthereumAddressStorage, checkContractAddressExists, getRaffleByContractAddressSafe, DatabaseRaffleWithCreator } from '@/actions/databaseActions'
+
+// Type definitions for the different result types
+interface TestAddressResult {
+  success: boolean
+  message?: string
+  error?: string
+  address: string
+  length: number
+}
+
+interface CheckExistsResult {
+  success: boolean
+  message: string
+  exists: boolean
+  error?: string
+}
+
+interface GetRaffleResult {
+  success: boolean
+  raffle?: DatabaseRaffleWithCreator
+  error?: string
+}
+
+interface CreateRaffleResult {
+  success: boolean
+  raffle?: DatabaseRaffleWithCreator
+  error?: string
+}
+
+// Union type for all possible results
+type TestResult = TestAddressResult | CheckExistsResult | GetRaffleResult | CreateRaffleResult | null
 
 export default function RaffleTest() {
   const [contractAddress, setContractAddress] = useState('0x04d26c6d9BfA194063Af60D36FBF4FF81E44893F')
   const [creatorId, setCreatorId] = useState('1')
-  const [result, setResult] = useState<any>(null)
+  const [result, setResult] = useState<TestResult>(null)
   const [loading, setLoading] = useState(false)
 
   const handleTestAddress = async () => {
