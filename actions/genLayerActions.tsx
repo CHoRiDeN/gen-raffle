@@ -37,7 +37,7 @@ export async function submitAnswer(contractAddress: any, answer: string) {
         hash: transactionHash,
         status: TransactionStatus.ACCEPTED,
         retries: 20,
-        interval: 2000,
+        interval: 1000,
     });
 
     console.log("RECEIPT: ", receipt);

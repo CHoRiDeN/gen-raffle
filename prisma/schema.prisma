@@ -1,0 +1,45 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                  Int      @id @default(autoincrement())
+  name                String   @db.VarChar(255)
+  clerk_id            String   @unique @db.VarChar(255)
+  email               String   @unique @db.VarChar(255)
+  wallet_address      String   @unique @db.VarChar(42)  // Ethereum address length
+  encrypted_private_key String @db.Text
+  iv                  String   @db.VarChar(32)
+  created_at          DateTime @default(now())
+  
+  // Relations
+  raffles             Raffle[]
+  
+  // Indexes for better performance
+  @@index([clerk_id])
+  @@index([email])
+  @@index([wallet_address])
+  @@index([created_at])
+}
+
+model Raffle {
+  id              Int      @id @default(autoincrement())
+  creator_id      Int
+  contract_address String  @unique @db.VarChar(42)  // Ethereum address length - mandatory and unique
+  created_at      DateTime @default(now())
+  
+  // Relations
+  creator         User     @relation(fields: [creator_id], references: [id], onDelete: Cascade)
+  
+  // Indexes for better performance
+  @@index([creator_id])
+  @@index([created_at])
+}

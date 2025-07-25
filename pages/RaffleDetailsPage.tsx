@@ -147,8 +147,8 @@ export default function RaffleDetailsPage({ raffle, contractAddress }: { raffle:
                                     </div>
                                 </div>
                                 <div className="flex items-center space-x-2">
-                                    <span className="px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full">
-                                        {hasWinner ? 'Completed' : 'Active'}
+                                    <span className={`px-3 py-1 text-sm font-medium rounded-full ${hasWinner ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>
+                                        {hasWinner ? 'Closed' : 'Active'}
                                     </span>
                                 </div>
                             </div>
@@ -207,7 +207,7 @@ export default function RaffleDetailsPage({ raffle, contractAddress }: { raffle:
                                                 Submitting...
                                             </>
                                         ) : (
-                                            "Submit Story"
+                                            "Submit answer"
                                         )}
                                     </button>
                                     
@@ -287,16 +287,12 @@ export default function RaffleDetailsPage({ raffle, contractAddress }: { raffle:
                                             })
                                             .map(([key, answer], index) => {
                                                 const rank = index + 1;
-                                                const isTopSubmission = rank === 1;
                                                 const isWinner = answer.address === raffle.winner;
 
                                                 return (
                                                     <div
                                                         key={key}
-                                                        className={`rounded-lg p-4 border transition-all ${isTopSubmission
-                                                            ? 'bg-yellow-50 border-yellow-200 shadow-sm'
-                                                            : 'bg-gray-50 border-gray-200'
-                                                            } ${isWinner ? 'ring-2 ring-green-200' : ''}`}
+                                                        className={`rounded-lg p-4 border transition-all bg-gray-50 border-gray-200 ${isWinner ? 'ring-2 ring-green-200 bg-green-50' : ''}`}
                                                     >
                                                         <div className="flex items-start justify-between mb-3">
                                                             <div className="flex items-center space-x-3">
@@ -332,13 +328,7 @@ export default function RaffleDetailsPage({ raffle, contractAddress }: { raffle:
                                                                 </div>
                                                             </div>
 
-                                                            {/* Score */}
-                                                            <div className={`px-2 py-1 rounded-full text-xs font-medium ${isTopSubmission
-                                                                ? 'bg-purple-100 text-purple-800'
-                                                                : 'bg-white text-gray-700 border border-gray-200'
-                                                                }`}>
-                                                                {parseFloat(answer.score) || 0}
-                                                            </div>
+                                                            
                                                         </div>
 
                                                         {/* Submission Text */}
