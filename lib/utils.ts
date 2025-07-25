@@ -10,7 +10,7 @@ export function cn(...inputs: ClassValue[]) {
 // Encrypt private key
 export function encryptPrivateKey(privateKey: string, encryptionKey: string): { encrypted: string; iv: string } {
   const iv = crypto.randomBytes(16);
-  const cipher = crypto.createCipher('aes-256-cbc', encryptionKey);
+  const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(encryptionKey.slice(0, 32)), iv);
   
   let encrypted = cipher.update(privateKey, 'utf8', 'hex');
   encrypted += cipher.final('hex');
@@ -23,7 +23,7 @@ export function encryptPrivateKey(privateKey: string, encryptionKey: string): { 
 
 // Decrypt private key
 export function decryptPrivateKey(encryptedPrivateKey: string, iv: string, encryptionKey: string): string {
-  const decipher = crypto.createDecipher('aes-256-cbc', encryptionKey);
+  const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(encryptionKey.slice(0, 32)), Buffer.from(iv, 'hex'));
   
   let decrypted = decipher.update(encryptedPrivateKey, 'hex', 'utf8');
   decrypted += decipher.final('utf8');
