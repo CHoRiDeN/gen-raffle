@@ -20,11 +20,11 @@ export async function getRafffleState(contractAddress: any) {
 
 }
 
-export async function submitAnswer(contractAddress: any, answer: string) {
+export async function submitAnswer(contractAddress: any, answer: string, clerk_id: string) {
     const transactionHash = await client.writeContract({
         address: contractAddress,
         functionName: 'add_entry',
-        args: [answer],
+        args: [answer, clerk_id],
         leaderOnly: true,
         value: BigInt(0),
     });

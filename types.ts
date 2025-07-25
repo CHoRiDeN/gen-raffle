@@ -2,6 +2,7 @@ export interface RaffleAnswer {
   address: string;
   answer: string;
   score: string;
+  clerk_id: string;
 }
 
 export interface Raffle {

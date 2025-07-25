@@ -10,6 +10,7 @@ export default function RaffleDetailsPage({ raffle, contractAddress }: { raffle:
     const [answer, setAnswer] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
+    const clerk_id = "1234";
 
     const handleSubmit = async () => {
         if (!answer.trim()) return;
@@ -18,7 +19,7 @@ export default function RaffleDetailsPage({ raffle, contractAddress }: { raffle:
         setSubmitStatus("idle");
 
         try {
-            await submitAnswer(contractAddress, answer.trim());
+            await submitAnswer(contractAddress, answer.trim(), clerk_id);
             setSubmitStatus("success");
             setAnswer("");
             // Optionally refresh the page or update the raffle state
@@ -265,8 +266,8 @@ export default function RaffleDetailsPage({ raffle, contractAddress }: { raffle:
                                                 // Sort by score (descending), then by address
                                                 const scoreA = parseFloat(a.score) || 0;
                                                 const scoreB = parseFloat(b.score) || 0;
-                                                if (scoreA !== scoreB) return scoreB - scoreA;
-                                                return a.address.localeCompare(b.address);
+                                                return scoreB - scoreA;
+                                                
                                             })
                                             .map(([key, answer], index) => {
                                                 const rank = index + 1;

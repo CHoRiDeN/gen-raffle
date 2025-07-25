@@ -56,7 +56,7 @@ def parse_llm_json_response(result: str, expected_key: str) -> str:
 @dataclass
 class RaffleAnswer:
     answer: str
-    address: str
+    clerk_id: str
     score: str
 
 # contract class
@@ -106,7 +106,7 @@ class RaffleContract(gl.Contract):
 
         # Get the first 4 answers
         top_4_answers = sorted_answers[:4]
-        answers_json = [{"answer": answer.answer, "address": answer.address} for answer in top_4_answers]
+        answers_json = [{"answer": answer.answer, "clerk_id": answer.clerk_id} for answer in top_4_answers]
         str_answers = json.dumps(answers_json)
 
 
@@ -181,7 +181,7 @@ JUDGE:
 
     @gl.public.write
     def add_entry(
-        self, answer: str
+        self, answer: str, clerk_id: str
     ) -> None:
         if self.raffle_status == "CLOSED":
             raise Exception("Raffle is already closed")
@@ -247,4 +247,4 @@ Respond in JSON:
 
         print('result score general',result)
 
-        self.answers[address] = RaffleAnswer(answer=answer, address=address, score=str(result))
+        self.answers[address] = RaffleAnswer(answer=answer, clerk_id=clerk_id, score=str(result))

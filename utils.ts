@@ -6,9 +6,10 @@ export function convertMapToRaffle(mapData: any): Raffle {
       const answersMap = mapData.get('answers');
       answersMap.forEach((value: any, key: string) => {
         answers.set(key, {
-          address: value.get('address'),
+          address: key,
           answer: value.get('answer'),
-          score: value.get('score')
+          score: value.get('score'),
+          clerk_id: value.get('clerk_id')
         });
       });
     }
