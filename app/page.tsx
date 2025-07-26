@@ -3,6 +3,9 @@ import RaffleCard from "@/components/RaffleCard";
 import RaffleCardSkeleton from "@/components/skeletons/RaffleCardSkeleton";
 import { Suspense } from "react";
 
+export const dynamic = 'force-dynamic';
+
+
 export default async function Home() {
   const raffles = await getDBRaffles();
     return (
