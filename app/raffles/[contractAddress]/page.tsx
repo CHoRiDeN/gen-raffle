@@ -5,6 +5,7 @@ import RaffleDetailsPage from "@/components/pages/RaffleDetailsPage";
 
 
 import type { Metadata } from "next";
+import { getDBRaffle } from "@/actions/databaseActions";
 
 
 export async function generateMetadata({ params }: RafflePageProps): Promise<Metadata> {
@@ -28,7 +29,11 @@ export default async function RafflePage({ params }: RafflePageProps) {
   const { contractAddress } = await params;
   const raffleStateMap = await getRafffleState(contractAddress);
   const raffleState: Raffle = convertMapToRaffle(raffleStateMap);
+  const dbRaffle = await getDBRaffle(contractAddress);
+  if (!dbRaffle) {
+    return <div>Raffle not found</div>
+  }
 
 
-  return <RaffleDetailsPage raffle={raffleState} contractAddress={contractAddress} />
+  return <RaffleDetailsPage raffle={raffleState} contractAddress={contractAddress} dbRaffle={dbRaffle} />
 }

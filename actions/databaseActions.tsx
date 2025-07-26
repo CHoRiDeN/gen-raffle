@@ -22,6 +22,24 @@ export interface DatabaseRaffleWithCreator {
   }
 }
 
+
+export async function getDBRaffle(contractAddress: string): Promise<DatabaseRaffleWithCreator | null> {
+  const raffle = await prisma.raffle.findUnique({
+    where: { contract_address: contractAddress },
+    include: {
+      creator: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          wallet_address: true,
+        },
+      },
+    },
+  })
+  return raffle
+}
+
 /**
  * Get all raffles with their creator information
  */

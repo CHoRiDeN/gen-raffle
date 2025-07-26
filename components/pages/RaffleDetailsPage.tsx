@@ -8,8 +8,10 @@ import { SignedIn, SignedOut, useUser } from "@clerk/nextjs";
 import Avvvatars from "avvvatars-react";
 import { Hash, TransactionStatus } from "genlayer-js/types";
 import { useUserContext } from "@/contexts/DbUserContext";
+import { DatabaseRaffleWithCreator } from "@/actions/databaseActions";
+import Image from "next/image";
 
-export default function RaffleDetailsPage({ raffle, contractAddress }: { raffle: Raffle; contractAddress: string }) {
+export default function RaffleDetailsPage({ raffle, contractAddress, dbRaffle }: { raffle: Raffle; contractAddress: string, dbRaffle: DatabaseRaffleWithCreator }) {
     const [answer, setAnswer] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
@@ -101,30 +103,14 @@ export default function RaffleDetailsPage({ raffle, contractAddress }: { raffle:
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Left Panel - Raffle Info Card */}
                     <div className="lg:col-span-1">
-                        <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-6 text-white shadow-xl">
-                            {/* Top Section */}
-                            <div className="mb-6">
-                                <h1 className="text-2xl font-bold mb-2">{raffle.title || "Story Contest"}</h1>
-                                <p className="text-gray-300 text-sm">AI-Powered Story Generation</p>
-                            </div>
-
-                            {/* Bottom Section */}
-                            <div className="flex items-center justify-between">
-                                <div className="text-2xl font-bold">genlayer</div>
-                                <div className="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center">
-                                    <span className="text-white font-bold text-lg">G</span>
-                                </div>
-                            </div>
-                        </div>
+                        <Image src={dbRaffle.image_url} alt={raffle.title} width={100} height={100} className="rounded-xl w-full h-auto" />
 
                         {/* Organizer Info */}
                         <div className="mt-6 bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                             <p className="text-gray-500 text-sm mb-2">Organized by</p>
-                            <div className="flex items-center mb-4">
-                                <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center mr-3">
-                                    <span className="text-white text-sm font-medium">G</span>
-                                </div>
-                                <span className="font-medium text-gray-900">GenLayer Team</span>
+                            <div className="flex items-center mb-4 space-x-2">
+                                <Avvvatars value={dbRaffle.creator.name} style="shape" size={24} />
+                                <span className="font-medium text-gray-900">{dbRaffle.creator.name}</span>
                             </div>
 
                             <p className="text-gray-500 text-sm mb-3">{participantCount} participants</p>
