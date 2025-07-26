@@ -10,6 +10,7 @@ import { Hash, TransactionStatus } from "genlayer-js/types";
 import { useUserContext } from "@/contexts/DbUserContext";
 import { DatabaseRaffleWithCreator } from "@/actions/databaseActions";
 import Image from "next/image";
+import { Button } from "../ui/button";
 
 export default function RaffleDetailsPage({ raffle, contractAddress, dbRaffle }: { raffle: Raffle; contractAddress: string, dbRaffle: DatabaseRaffleWithCreator }) {
     const [answer, setAnswer] = useState("");
@@ -19,6 +20,7 @@ export default function RaffleDetailsPage({ raffle, contractAddress, dbRaffle }:
     const [transactionStatus, setTransactionStatus] = useState<string>("");
     const { dbUser } = useUserContext();
     const { user: clerkUser } = useUser();
+    const isOwner = dbUser?.id === dbRaffle.creator.id;
 
     const handleSubmit = async () => {
         if (!answer.trim()) return;
@@ -108,9 +110,17 @@ export default function RaffleDetailsPage({ raffle, contractAddress, dbRaffle }:
                         {/* Organizer Info */}
                         <div className="mt-6 bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                             <p className="text-gray-500 text-sm mb-2">Organized by</p>
+                            
                             <div className="flex items-center mb-4 space-x-2">
                                 <Avvvatars value={dbRaffle.creator.name} style="shape" size={24} />
-                                <span className="font-medium text-gray-900">{dbRaffle.creator.name}</span>
+                                <span className="font-medium text-gray-900">
+                                    {dbRaffle.creator.name}
+                                    {isOwner && (
+                                        <span className="text-xs text-gray-500 ml-2">
+                                            (You)
+                                        </span>
+                                    )}
+                                </span>
                             </div>
 
                             <p className="text-gray-500 text-sm mb-3">{participantCount} participants</p>
@@ -165,13 +175,22 @@ export default function RaffleDetailsPage({ raffle, contractAddress, dbRaffle }:
                                         </div>
                                     </div>
                                 </div>
-                                <div className="flex items-center space-x-2">
-                                    <span className={`px-3 py-1 text-sm font-medium rounded-full ${hasWinner ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>
-                                        {hasWinner ? 'Closed' : 'Active'}
-                                    </span>
-                                </div>
+                                {isOwner && (
+                                    <div className="flex items-center space-x-2">
+                                        <span className={`px-3 py-1 text-sm font-medium rounded-full ${hasWinner ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>
+                                            {hasWinner ? 'Closed' : 'Active'}
+                                        </span>
+                                    </div>
+                                )}
                             </div>
 
+
+                            {/* Resolve */}
+                            {isOwner && (
+                                <div className="mb-6">
+                                    <Button size="lg" className="w-full">Resolve Raffle</Button>
+                                </div>
+                            )}
 
 
 
@@ -214,10 +233,11 @@ export default function RaffleDetailsPage({ raffle, contractAddress, dbRaffle }:
                                                 </p>
                                             </div>
 
-                                            <button
+                                            <Button
+                                                className="w-full"
+                                                size="lg"
                                                 onClick={handleSubmit}
                                                 disabled={isSubmitting || !answer.trim()}
-                                                className="w-full bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                                             >
                                                 {isSubmitting ? (
                                                     <>
@@ -230,7 +250,7 @@ export default function RaffleDetailsPage({ raffle, contractAddress, dbRaffle }:
                                                 ) : (
                                                     "Submit answer"
                                                 )}
-                                            </button>
+                                            </Button>
 
                                             {submitStatus === "success" && (
                                                 <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
