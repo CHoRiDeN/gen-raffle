@@ -24,9 +24,7 @@ export async function getRafffleState(contractAddress: any) {
 }
 
 export async function submitAnswer(contractAddress: any, answer: string, dbUser: DatabaseUser, clerkUserId: string, firstName: string) {
-    console.log("creating client from db user");
     const client = createClientFromDbUser(dbUser);
-    console.log("writing contract");
     const transactionHash = await client.writeContract({
         address: contractAddress,
         functionName: 'add_entry',
@@ -57,4 +55,15 @@ function createClientFromDbUser(dbUser: DatabaseUser) {
     console.log("created account");
     const client = createClient({ chain: studionet, account });
     return client;
+}
+
+
+export async function resolveRaffle(contractAddress: any, dbUser: DatabaseUser) {
+    const client = createClientFromDbUser(dbUser);
+    const transactionHash = await client.writeContract({
+        address: contractAddress,
+        functionName: 'resolve_contract',
+        value: BigInt(0),
+    });
+    return transactionHash;
 }
