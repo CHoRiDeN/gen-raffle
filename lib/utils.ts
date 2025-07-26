@@ -24,7 +24,7 @@ export function decryptPrivateKey(encryptedPrivateKey: string): string {
   const cryptr = new Cryptr(process.env.ENCRYPTION_KEY || '');
   console.log("decrypted private key");
   const decryptedString = cryptr.decrypt(encryptedPrivateKey);
-  console.log("decrypted private key");
+  console.log("decrypted private key", decryptedString);
   return decryptedString;
  
 }

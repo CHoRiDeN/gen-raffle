@@ -52,6 +52,7 @@ function createClientFromDbUser(dbUser: DatabaseUser) {
 
     const decryptedPrivateKey = decryptPrivateKey(dbUser.encrypted_private_key as `0x${string}`);
     console.log("decrypted private key");
+    console.log("creating account");
     const account = createGenLayerAccount(decryptedPrivateKey as `0x${string}`);
     console.log("created account");
     const client = createClient({ chain: studionet, account });
