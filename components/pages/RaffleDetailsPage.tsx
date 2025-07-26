@@ -112,7 +112,6 @@ export default function RaffleDetailsPage({ raffle, contractAddress, dbRaffle }:
                             <p className="text-gray-500 text-sm mb-2">Organized by</p>
                             
                             <div className="flex items-center mb-4 space-x-2">
-                                <Avvvatars value={dbRaffle.creator.name} style="shape" size={24} />
                                 <span className="font-medium text-gray-900">
                                     {dbRaffle.creator.name}
                                     {isOwner && (
@@ -127,9 +126,8 @@ export default function RaffleDetailsPage({ raffle, contractAddress, dbRaffle }:
 
                             <div className="flex items-center mb-4">
                                 <div className="flex -space-x-2 mr-3">
-                                    {Array.from({ length: Math.min(5, participantCount) }, (_, i) => (
-                                        <div key={i} className={`w-6 h-6 rounded-full border-2 border-white ${['bg-orange-400', 'bg-yellow-400', 'bg-green-400', 'bg-blue-400', 'bg-purple-400'][i % 5]
-                                            }`}></div>
+                                    {Array.from(raffle.answers.values()).map((answer) => (
+                                        <Avvvatars value={answer.name} style="shape" size={24} />
                                     ))}
                                 </div>
                                 <span className="text-sm text-gray-500">
@@ -137,15 +135,7 @@ export default function RaffleDetailsPage({ raffle, contractAddress, dbRaffle }:
                                 </span>
                             </div>
 
-                            <div className="space-y-2">
-                                <button className="text-sm text-purple-600 hover:text-purple-700 transition-colors">
-                                    Contact organizers
-                                </button>
-                                <button className="text-sm text-gray-500 hover:text-gray-600 transition-colors">
-                                    Report raffle
-                                </button>
-                            </div>
-
+                            
                             <div className="mt-4 flex items-center">
                                 <span className="text-gray-400 mr-2">#</span>
                                 <span className="text-sm text-gray-600">AI Contest</span>
