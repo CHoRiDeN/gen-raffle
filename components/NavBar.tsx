@@ -15,7 +15,7 @@ export default function NavBar() {
                 <div className="flex items-center space-x-8">
                     <div className="text-purple-600 font-semibold text-xl">RaffleStory*</div>
                     <nav className="flex items-center space-x-6 text-gray-600">
-                        <Link href="/raffles">
+                        <Link href="/">
                             <span className="text-sm">Raffles</span>
                         </Link>
                         <Link href="/leaderboard">

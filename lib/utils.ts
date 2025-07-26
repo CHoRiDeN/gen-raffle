@@ -6,6 +6,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+// Generate a random Ethereum wallet address
+
 
 // Encrypt private key
 export function encryptPrivateKey(privateKey: string, encryptionKey: string): { encrypted: string; iv: string } {
@@ -23,6 +25,8 @@ export function encryptPrivateKey(privateKey: string, encryptionKey: string): { 
 
 // Decrypt private key
 export function decryptPrivateKey(encryptedPrivateKey: string, iv: string, encryptionKey: string): string {
+  console.log("ENCRYPTION KEY: ", encryptionKey);
+  console.log("IV: ", iv);
   const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(encryptionKey.slice(0, 32)), Buffer.from(iv, 'hex'));
   
   let decrypted = decipher.update(encryptedPrivateKey, 'hex', 'utf8');
