@@ -1,16 +1,30 @@
 import { getDBRaffles } from "@/actions/databaseActions";
 import RaffleCard from "@/components/RaffleCard";
 import RaffleCardSkeleton from "@/components/skeletons/RaffleCardSkeleton";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import { Suspense } from "react";
 
 export const dynamic = 'force-dynamic';
 
+export const metadata = {
+  title: 'GenRaffle*',
+  description: 'GenRaffle* is a platform for creating and participating in raffles',
+}
 
 export default async function Home() {
   const raffles = await getDBRaffles();
     return (
         <div className="min-h-screen py-8">
             <div className="max-w-2xl mx-auto px-6">
+
+                <div className="flex justify-end mb-4">
+                    <Link
+                        href="/add"
+                    >
+                        <Button size="sm">Create Raffle</Button>
+                    </Link>
+                </div>
 
                 <div className="space-y-8">
                     {raffles.length === 0 ? (

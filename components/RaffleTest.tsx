@@ -37,7 +37,6 @@ type TestResult = TestAddressResult | CheckExistsResult | GetRaffleResult | Crea
 
 export default function RaffleTest() {
   const [contractAddress, setContractAddress] = useState('')
-  const [creatorId, setCreatorId] = useState('1')
   const [result, setResult] = useState<TestResult>(null)
   const [loading, setLoading] = useState(false)
   const {dbUser} = useUserContext();
@@ -57,7 +56,7 @@ export default function RaffleTest() {
   const handleCreateRaffle = async () => {
     setLoading(true)
     try {
-      const raffle = await createRaffle(parseInt(creatorId), contractAddress)
+      const raffle = await createRaffle(dbUser?.id as number, contractAddress)
       setResult({ success: true, raffle })
     } catch (error) {
       setResult({ success: false, error: error instanceof Error ? error.message : 'Unknown error' })

@@ -138,8 +138,8 @@ export default function RaffleDetailsPage({ raffle, contractAddress, dbRaffle }:
 
                             <div className="flex items-center mb-4">
                                 <div className="flex -space-x-2 mr-3">
-                                    {Array.from(raffle.answers.values()).map((answer) => (
-                                        <Avvvatars value={answer.name} style="shape" size={24} />
+                                    {Array.from(raffle.answers.values()).map((answer, key) => (
+                                        <Avvvatars key={key} value={answer.name} style="shape" size={24} />
                                     ))}
                                 </div>
                                 <span className="text-sm text-gray-500">

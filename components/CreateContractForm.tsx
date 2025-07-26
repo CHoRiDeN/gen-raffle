@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from "react";
-import { useUser } from "@clerk/nextjs";
 import { useUserContext } from "@/contexts/DbUserContext";
 import { deployRaffleContract, getTransaction } from "@/actions/genLayerActions";
 import { createRaffle } from "@/actions/databaseActions";
@@ -25,7 +24,6 @@ export default function CreateContractForm() {
     const [errorMessage, setErrorMessage] = useState<string>("");
 
     const { dbUser } = useUserContext();
-    const { user: clerkUser } = useUser();
     const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
