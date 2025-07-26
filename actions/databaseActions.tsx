@@ -42,7 +42,7 @@ export async function getDBRaffles(): Promise<DatabaseRaffleWithCreator[]> {
         created_at: 'desc',
       },
     })
-
+    console.log(`Found ${raffles.length} raffles`);
     return raffles
   } catch (error) {
     console.error('Error fetching raffles:', error)

@@ -5,7 +5,6 @@ import { Suspense } from "react";
 
 export default async function Home() {
   const raffles = await getDBRaffles();
-    console.log(raffles);
     return (
         <div className="min-h-screen py-8">
             <div className="max-w-2xl mx-auto px-6">

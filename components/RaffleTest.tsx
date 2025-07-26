@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { createRaffle, testEthereumAddressStorage, checkContractAddressExists, getRaffleByContractAddressSafe, DatabaseRaffleWithCreator } from '@/actions/databaseActions'
+import { useUserContext } from '@/contexts/DbUserContext'
 
 // Type definitions for the different result types
 interface TestAddressResult {
@@ -35,10 +36,11 @@ interface CreateRaffleResult {
 type TestResult = TestAddressResult | CheckExistsResult | GetRaffleResult | CreateRaffleResult | null
 
 export default function RaffleTest() {
-  const [contractAddress, setContractAddress] = useState('0x04d26c6d9BfA194063Af60D36FBF4FF81E44893F')
+  const [contractAddress, setContractAddress] = useState('')
   const [creatorId, setCreatorId] = useState('1')
   const [result, setResult] = useState<TestResult>(null)
   const [loading, setLoading] = useState(false)
+  const {dbUser} = useUserContext();
 
   const handleTestAddress = async () => {
     setLoading(true)
@@ -116,8 +118,8 @@ export default function RaffleTest() {
           </label>
           <input
             type="number"
-            value={creatorId}
-            onChange={(e) => setCreatorId(e.target.value)}
+            disabled
+            value={dbUser?.id}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             placeholder="1"
           />
