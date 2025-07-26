@@ -24,7 +24,9 @@ export async function getRafffleState(contractAddress: any) {
 }
 
 export async function submitAnswer(contractAddress: any, answer: string, dbUser: DatabaseUser, clerkUserId: string, firstName: string) {
+    console.log("creating client from db user");
     const client = createClientFromDbUser(dbUser);
+    console.log("writing contract");
     const transactionHash = await client.writeContract({
         address: contractAddress,
         functionName: 'add_entry',
@@ -49,7 +51,9 @@ export async function getTransaction(transactionHash: Hash, dbUser: DatabaseUser
 function createClientFromDbUser(dbUser: DatabaseUser) {
 
     const decryptedPrivateKey = decryptPrivateKey(dbUser.encrypted_private_key as `0x${string}`);
+    console.log("decrypted private key");
     const account = createGenLayerAccount(decryptedPrivateKey as `0x${string}`);
+    console.log("created account");
     const client = createClient({ chain: studionet, account });
     return client;
 }
