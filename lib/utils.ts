@@ -1,6 +1,6 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
-import crypto from 'crypto';
+import Cryptr from 'cryptr';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -10,27 +10,19 @@ export function cn(...inputs: ClassValue[]) {
 
 
 // Encrypt private key
-export function encryptPrivateKey(privateKey: string, encryptionKey: string): { encrypted: string; iv: string } {
-  const iv = crypto.randomBytes(16);
-  const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(encryptionKey.slice(0, 32)), iv);
+export function encryptPrivateKey(privateKey: string): string {
+  const cryptr = new Cryptr(process.env.ENCRYPTION_KEY || '');
+
+  const encryptedString = cryptr.encrypt(privateKey);
+  return encryptedString;
   
-  let encrypted = cipher.update(privateKey, 'utf8', 'hex');
-  encrypted += cipher.final('hex');
-  
-  return {
-    encrypted,
-    iv: iv.toString('hex')
-  };
 }
 
-// Decrypt private key
-export function decryptPrivateKey(encryptedPrivateKey: string, iv: string, encryptionKey: string): string {
-  console.log("ENCRYPTION KEY: ", encryptionKey);
-  console.log("IV: ", iv);
-  const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(encryptionKey.slice(0, 32)), Buffer.from(iv, 'hex'));
-  
-  let decrypted = decipher.update(encryptedPrivateKey, 'hex', 'utf8');
-  decrypted += decipher.final('utf8');
-  
-  return decrypted;
+// Decrypt private key with backward compatibility
+export function decryptPrivateKey(encryptedPrivateKey: string): string {
+  const cryptr = new Cryptr(process.env.ENCRYPTION_KEY || '');
+
+  const decryptedString = cryptr.decrypt(encryptedPrivateKey);
+  return decryptedString;
+ 
 }

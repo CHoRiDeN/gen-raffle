@@ -58,8 +58,7 @@ export async function POST(req: Request) {
         
         // Generate wallet address and private key
         const privateKey = generatePrivateKey();
-        const encryptionKey = process.env.ENCRYPTION_KEY || 'default-key-change-in-production';
-        const { encrypted: encryptedPrivateKey, iv } = encryptPrivateKey(privateKey, encryptionKey);
+        const encrypted = encryptPrivateKey(privateKey);
         const account = createAccount(privateKey);
 
         // Create user in database
@@ -69,8 +68,8 @@ export async function POST(req: Request) {
             name: `${user.first_name || ''} ${user.last_name || ''}`.trim() || 'Anonymous',
             email: user.email_addresses?.[0]?.email_address || '',
             wallet_address: account.address,
-            encrypted_private_key: encryptedPrivateKey,
-            iv: iv,
+            encrypted_private_key: encrypted,
+            iv: 'no iv'
           },
         });
         

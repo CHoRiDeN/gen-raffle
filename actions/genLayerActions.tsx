@@ -47,8 +47,8 @@ export async function getTransaction(transactionHash: Hash, dbUser: DatabaseUser
 }
 
 function createClientFromDbUser(dbUser: DatabaseUser) {
-    const encryptionKey = process.env.ENCRYPTION_KEY || 'default-key-change-in-production';
-    const decryptedPrivateKey = decryptPrivateKey(dbUser.encrypted_private_key as `0x${string}`, dbUser.iv as `0x${string}`, encryptionKey);
+
+    const decryptedPrivateKey = decryptPrivateKey(dbUser.encrypted_private_key as `0x${string}`);
     const account = createGenLayerAccount(decryptedPrivateKey as `0x${string}`);
     const client = createClient({ chain: studionet, account });
     return client;
