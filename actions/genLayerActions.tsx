@@ -4,7 +4,9 @@ import { DatabaseUser } from "@/contexts/DbUserContext";
 import { decryptPrivateKey } from "@/lib/utils";
 import { createClient, createAccount as createGenLayerAccount, generatePrivateKey } from "genlayer-js";
 import { studionet } from "genlayer-js/chains";
-import { Hash } from 'genlayer-js/types';
+import { Hash, TransactionStatus } from 'genlayer-js/types';
+import { readFileSync } from 'fs';
+import path from 'path';
 
 
 
@@ -44,6 +46,47 @@ export async function getTransaction(transactionHash: Hash, dbUser: DatabaseUser
         hash: transactionHash,
     });
     return transaction;
+}
+
+export async function deployRaffleContract(
+    evaluation_criteria: string, 
+    constraints: string, 
+    title: string, 
+    description: string, 
+    dbUser: DatabaseUser
+) {
+    const client = createClientFromDbUser(dbUser);
+    
+    // Initialize consensus smart contract
+    await client.initializeConsensusSmartContract();
+    
+    // Read contract code from file
+    const contractPath = path.join(process.cwd(), 'contracts', 'raffle_contract.py');
+    const contractCode = readFileSync(contractPath, 'utf-8');
+    
+    // Deploy contract with constructor arguments
+    const deployParams = {
+        code: contractCode,
+        args: [evaluation_criteria, constraints, title, description],
+        leaderOnly: false,
+    };
+    
+    const transactionHash = await client.deployContract(deployParams);
+    
+    // Wait for deployment to complete
+    const receipt = await client.waitForTransactionReceipt({
+        hash: transactionHash as Hash,
+        status: TransactionStatus.ACCEPTED,
+        retries: 50,
+        interval: 5000,
+    });
+    
+    console.log('Contract deployed at:', receipt.data?.contract_address);
+    
+    return {
+        transactionHash,
+        contractAddress: receipt.data?.contract_address
+    };
 }
 
 function createClientFromDbUser(dbUser: DatabaseUser) {

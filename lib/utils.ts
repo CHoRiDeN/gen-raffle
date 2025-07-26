@@ -20,11 +20,8 @@ export function encryptPrivateKey(privateKey: string): string {
 
 // Decrypt private key with backward compatibility
 export function decryptPrivateKey(encryptedPrivateKey: string): string {
-  console.log("decrypting private key");
   const cryptr = new Cryptr(process.env.ENCRYPTION_KEY || '');
-  console.log("decrypted private key");
   const decryptedString = cryptr.decrypt(encryptedPrivateKey);
-  console.log("decrypted private key", decryptedString);
   return decryptedString;
  
 }

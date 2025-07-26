@@ -1,5 +1,5 @@
-import RaffleTest from "@/components/RaffleTest";
+import CreateContractForm from "@/components/CreateContractForm";
 
 export default function AddPage() {
-    return <RaffleTest/>
+    return <CreateContractForm />
 }
