@@ -37,10 +37,10 @@ export default function RaffleDetailsPage({ raffle, contractAddress, dbRaffle }:
         <div className="">
 
             {/* Main Content */}
-            <div className="max-w-[942px] mx-auto px-6 py-8">
-                <div className="grid grid-cols-[2fr_1fr] gap-8 w-full">
+            <div className="w-full max-w-[942px] mx-auto px-6 py-8">
+                <div className="flex flex-col md:grid md:grid-cols-[2fr_1fr] gap-8 w-full">
                     {/* Left Panel - Raffle Details */}
-                    <div className="flex flex-col gap-8 pb-12">
+                    <div className="flex flex-col gap-8 md:pb-12">
                         <Card>
                             <CardContent>
                                 <div className="flex flex-col gap-4 pt-2">
