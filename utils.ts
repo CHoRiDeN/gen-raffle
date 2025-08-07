@@ -1,4 +1,21 @@
 import { Raffle, RaffleAnswer } from "./types";
+import moment from "moment";
+
+export function formatDate(date: string): string {
+  const now = moment();
+  const inputDate = moment(date);
+  const diffInHours = now.diff(inputDate, 'hours');
+
+  if (diffInHours < 1) {
+    return 'just now';
+  }
+  if (diffInHours < 24) {
+    return `${diffInHours} hours ago`;
+  } else if (now.isSame(inputDate, 'day')) {
+    return 'yesterday';
+  }
+  return moment(date).format('DD MMM YY');
+}
 
 export function convertMapToRaffle(mapData: any): Raffle {
   const answers = new Map<string, RaffleAnswer>();

@@ -22,15 +22,19 @@ export default function NavBar() {
                         <Link href="/leaderboard">
                             <span className="text-sm">Leaderboard</span>
                         </Link>
-                        
+
                     </nav>
                 </div>
                 <div className="flex items-center space-x-4">
-                <SignedOut>
-                        <SignInButton />
+                    <SignedOut>
+                        <SignInButton >
+                            <Button size="sm" variant="outline">
+                                Sign In
+                            </Button>
+                        </SignInButton>
                         <SignUpButton>
                             <Button size="sm">
-                                Sign Up
+                                Register
                             </Button>
                         </SignUpButton>
                     </SignedOut>

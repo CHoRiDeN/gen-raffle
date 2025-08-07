@@ -120,3 +120,11 @@
     @apply bg-background text-foreground;
   }
 }
+
+.raffle-label {
+  @apply text-[14px] font-medium text-slate-500;
+}
+
+.raffle-desc {
+  @apply text-[15px] text-slate-600 leading-6;
+}

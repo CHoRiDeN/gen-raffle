@@ -4,6 +4,7 @@ import "./globals.css";
 import NavBar from "@/components/NavBar";
 import { ClerkProvider } from "@clerk/nextjs";
 import { UserProvider } from "@/contexts/DbUserContext";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,6 +36,7 @@ export default function RootLayout({
             <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-indigo-100">
               <NavBar />
               {children}
+              <Toaster position="top-right" richColors theme="light" />
             </div>
           </UserProvider>
         </body>
