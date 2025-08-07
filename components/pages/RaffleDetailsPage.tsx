@@ -8,7 +8,7 @@ import Image from "next/image";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Badge } from "../ui/badge";
-import { Facebook, Instagram, Quote, Twitter } from "lucide-react";
+import { Facebook, Instagram, Twitter } from "lucide-react";
 import RaffleSubmission from "../RaffleSubmission";
 import SubmitRaffleAnswerComponent from "../SubmitRaffleAnswerComponent";
 import ResolveRaffleComponent from "../ResolveRaffleComponent";
@@ -64,17 +64,7 @@ export default function RaffleDetailsPage({ raffle, contractAddress, dbRaffle }:
                                 )}
                             </CardContent>
                         </Card>
-                        {/* Submit Answer */}
-                        {raffle.raffle_status === 'OPEN' && !winnerAnswer && (
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>Submit your answer</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <SubmitRaffleAnswerComponent contractAddress={contractAddress} />
-                                </CardContent>
-                            </Card>
-                        )}
+                       
                         {/* Winner announcement */}
                         {winnerAnswer && (
                             <Card>
@@ -108,6 +98,18 @@ export default function RaffleDetailsPage({ raffle, contractAddress, dbRaffle }:
 
                             </CardContent>
                         </Card>
+
+                         {/* Submit Answer */}
+                         {raffle.raffle_status === 'OPEN' && !winnerAnswer && (
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Submit your answer</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <SubmitRaffleAnswerComponent contractAddress={contractAddress} />
+                                </CardContent>
+                            </Card>
+                        )}
 
 
                     </div>

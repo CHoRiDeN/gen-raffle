@@ -14,13 +14,13 @@ export default function NavBar() {
         <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 px-6 py-4">
             <div className="max-w-7xl mx-auto flex items-center justify-between">
                 <div className="flex items-center space-x-8">
-                    <div className="text-purple-600 font-semibold text-xl">RaffleStory*</div>
+                    <div className="text-purple-600 font-semibold text-xl">GenRaffle*</div>
                     <nav className="flex items-center space-x-6 text-gray-600">
                         <Link href="/">
                             <span className="text-sm">Explore</span>
                         </Link>
-                        <Link href="/leaderboard">
-                            <span className="text-sm">Leaderboard</span>
+                        <Link href="/my-raffles">
+                            <span className="text-sm">My raffles</span>
                         </Link>
 
                     </nav>

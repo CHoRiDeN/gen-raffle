@@ -17,6 +17,14 @@ export function formatDate(date: string): string {
   return moment(date).format('DD MMM YY');
 }
 
+
+export function limitText(text: string, limit: number): string {
+  if (text.length <= limit) {
+    return text;
+  }
+  return text.slice(0, limit) + '...';
+}
+
 export function convertMapToRaffle(mapData: any): Raffle {
   const answers = new Map<string, RaffleAnswer>();
   if (mapData.get('answers')) {

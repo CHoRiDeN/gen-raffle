@@ -5,6 +5,7 @@ import NavBar from "@/components/NavBar";
 import { ClerkProvider } from "@clerk/nextjs";
 import { UserProvider } from "@/contexts/DbUserContext";
 import { Toaster } from "@/components/ui/sonner";
+import { Analytics } from "@vercel/analytics/next"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,6 +40,7 @@ export default function RootLayout({
               <Toaster position="top-right" richColors theme="light" />
             </div>
           </UserProvider>
+          <Analytics />
         </body>
       </html>
     </ClerkProvider>

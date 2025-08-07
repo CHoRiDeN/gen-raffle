@@ -1,11 +1,20 @@
 'use client'
 
+import { Card, CardContent } from "../ui/card";
+import { Skeleton } from "../ui/skeleton";
+
 export default function RaffleCardSkeleton() {
     return (
-        <div className="bg-white rounded-lg flex flex-row justify-between items-start px-5 py-4 hover:cursor-pointer">
-            <div className="flex flex-col gap-2">
-                <div className="h-4 w-32 bg-gray-200 rounded"></div>
-            </div>
-        </div>
+        <Card>
+            <CardContent>
+                <div className="flex flex-col gap-4 relative py-2">
+                    <Skeleton className="w-full h-[120px] rounded-[8px] object-cover aspect-video" />
+                    <Skeleton className="w-full h-[20px] rounded-[8px]" />
+                    <Skeleton className="w-full h-[20px] rounded-[8px]" />
+                    <Skeleton className="w-full h-[20px] rounded-[8px]" />
+                    <Skeleton className="w-full h-[20px] rounded-[8px]" />
+                </div>
+            </CardContent>
+        </Card>
     )
 }
