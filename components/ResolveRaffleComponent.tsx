@@ -4,7 +4,7 @@ import { getTransaction, resolveRaffle } from "@/actions/genLayerActions";
 import { Button } from "./ui/button"
 import { useUserContext } from "@/contexts/DbUserContext";
 import { useEffect, useState } from "react";
-import { TransactionStatus } from "genlayer-js/types";
+import { Hash, TransactionStatus } from "genlayer-js/types";
 
 export default function ResolveRaffleComponent({ contractAddress }: { contractAddress: string }) {
     const { dbUser } = useUserContext();

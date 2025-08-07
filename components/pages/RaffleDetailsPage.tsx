@@ -1,12 +1,7 @@
 'use client'
 
 import { Raffle } from "@/types";
-import { submitAnswer, getTransaction, resolveRaffle } from "@/actions/genLayerActions";
-import { Textarea } from "@/components/ui/textarea";
-import { useState, useEffect } from "react";
-import { SignedIn, SignedOut, useUser } from "@clerk/nextjs";
 import Avvvatars from "avvvatars-react";
-import { Hash, TransactionStatus } from "genlayer-js/types";
 import { useUserContext } from "@/contexts/DbUserContext";
 import { DatabaseRaffleWithCreator } from "@/actions/databaseActions";
 import Image from "next/image";
@@ -18,7 +13,6 @@ import RaffleSubmission from "../RaffleSubmission";
 import SubmitRaffleAnswerComponent from "../SubmitRaffleAnswerComponent";
 import ResolveRaffleComponent from "../ResolveRaffleComponent";
 import { formatDate } from "@/utils";
-import moment from "moment";
 import RaffleWinnerSection from "../RaffleWinnerSection";
 
 export default function RaffleDetailsPage({ raffle, contractAddress, dbRaffle }: { raffle: Raffle; contractAddress: string, dbRaffle: DatabaseRaffleWithCreator }) {
