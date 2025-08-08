@@ -5,8 +5,7 @@ import { Menu, WalletIcon } from "lucide-react"
 import Link from "next/link"
 import { useUserContext } from "@/contexts/DbUserContext"
 import { Button } from "./ui/button"
-import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet"
-import { auth } from "@clerk/nextjs/server"
+import { Sheet, SheetContent, SheetFooter, SheetTrigger } from "./ui/sheet"
 
 export default function NavBar() {
     const { dbUser, loading } = useUserContext()

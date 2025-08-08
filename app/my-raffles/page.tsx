@@ -42,9 +42,9 @@ export default async function MyRafflesPage() {
                                 <Plus className="h-8 w-8 text-gray-400" />
                             </div>
                             <h3 className="text-lg font-medium text-gray-900 mb-2">No raffles yet</h3>
-                            <p className="text-gray-600 mb-6">
-                                You haven't created any raffles yet. Start by creating your first raffle!
-                            </p>
+                                                         <p className="text-gray-600 mb-6">
+                                 You haven&apos;t created any raffles yet. Start by creating your first raffle!
+                             </p>
                             <Link href="/add">
                                 <Button className="flex items-center gap-2 mx-auto">
                                     <Plus className="h-4 w-4" />

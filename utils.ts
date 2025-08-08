@@ -3,16 +3,17 @@ import moment from "moment";
 import DOMPurify from 'dompurify';
 
 export function formatDate(date: string): string {
+  const parsedDate = moment(date, 'YYYY-MM-DD HH:mm:ss').utc();
   const now = moment();
-  const inputDate = moment(date);
-  const diffInHours = now.diff(inputDate, 'hours');
+  const diffInMinutes = now.diff(parsedDate, 'minutes');
+  const yesterday = now.subtract(1, 'day');
 
-  if (diffInHours < 1) {
-    return 'just now';
+  if (diffInMinutes < 60) {
+    return 'few mins ago';
   }
-  if (diffInHours < 24) {
-    return `${diffInHours} hours ago`;
-  } else if (now.isSame(inputDate, 'day')) {
+  if (diffInMinutes/60 < 24) {
+    return `${Math.floor(diffInMinutes/60)} hours ago`;
+  } else if (yesterday.isSame(parsedDate, 'day')) {
     return 'yesterday';
   }
   return moment(date).format('DD MMM YY');
