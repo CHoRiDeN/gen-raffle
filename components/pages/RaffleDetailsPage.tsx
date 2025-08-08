@@ -12,7 +12,7 @@ import { Facebook, Instagram, Twitter } from "lucide-react";
 import RaffleSubmission from "../RaffleSubmission";
 import SubmitRaffleAnswerComponent from "../SubmitRaffleAnswerComponent";
 import ResolveRaffleComponent from "../ResolveRaffleComponent";
-import { formatDate } from "@/utils";
+import { formatDate, renderHTML } from "@/utils";
 import RaffleWinnerSection from "../RaffleWinnerSection";
 
 export default function RaffleDetailsPage({ raffle, contractAddress, dbRaffle }: { raffle: Raffle; contractAddress: string, dbRaffle: DatabaseRaffleWithCreator }) {
@@ -44,11 +44,11 @@ export default function RaffleDetailsPage({ raffle, contractAddress, dbRaffle }:
                         <Card>
                             <CardContent>
                                 <div className="flex flex-col gap-4 pt-2">
-                                    <Image src={dbRaffle.image_url} alt={raffle.title} width={100} height={100} className="rounded-lg w-full h-auto aspect-video" />
+                                    <Image src={dbRaffle.image_url} alt={raffle.title} width={1000} height={1000} className="rounded-lg w-full h-auto aspect-video object-cover" />
                                     <h1 className="text-[27px] font-semibold">{raffle.title}</h1>
                                     <div className="space-y-1">
                                         <div className="raffle-label">Description</div>
-                                        <div className="raffle-desc">{raffle.description}</div>
+                                        <div className="raffle-desc" dangerouslySetInnerHTML={renderHTML(raffle.description)} />
                                     </div>
                                     <div className="space-y-2">
                                         <div className="raffle-label">Organized by</div>

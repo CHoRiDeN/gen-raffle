@@ -69,6 +69,39 @@ export async function getDBRaffles(): Promise<DatabaseRaffleWithCreator[]> {
 }
 
 /**
+ * Get raffles created by a specific user using clerk_id
+ */
+export async function getDBRafflesByClerkId(clerkId: string): Promise<DatabaseRaffleWithCreator[]> {
+  try {
+    const raffles = await prisma.raffle.findMany({
+      where: {
+        creator: {
+          clerk_id: clerkId,
+        },
+      },
+      include: {
+        creator: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            wallet_address: true,
+          },
+        },
+      },
+      orderBy: {
+        created_at: 'desc',
+      },
+    })
+    console.log(`Found ${raffles.length} raffles for user with clerk_id ${clerkId}`);
+    return raffles
+  } catch (error) {
+    console.error('Error fetching user raffles:', error)
+    throw new Error('Failed to fetch user raffles')
+  }
+}
+
+/**
  * Get a specific raffle by contract address
  */
 export async function getRaffleByContractAddress(contractAddress: string): Promise<DatabaseRaffleWithCreator | null> {
@@ -129,10 +162,13 @@ export async function createRaffle(creatorId: number, contractAddress: string): 
       throw new Error('Creator not found')
     }
 
+    const getRandomNumber = () => Math.floor(Math.random() * 9) + 1;
+
     const raffle = await prisma.raffle.create({
       data: {
         creator_id: creatorId,
         contract_address: contractAddress,
+        image_url: `/images/raffles/bg${getRandomNumber()}.png`,
       },
       include: {
         creator: {

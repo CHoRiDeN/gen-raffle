@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Hash, TransactionStatus } from "genlayer-js/types";
 import { useRouter } from "next/navigation";
+import { handleNewlines } from "@/utils";
 
 export default function CreateContractForm() {
     const [title, setTitle] = useState("");
@@ -50,7 +51,7 @@ export default function CreateContractForm() {
                 evaluationCriteria.trim(),
                 constraints.trim(),
                 title.trim(),
-                description.trim(),
+                handleNewlines(description.trim()),
                 dbUser
             );
 

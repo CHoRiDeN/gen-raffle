@@ -10,8 +10,8 @@ import { Suspense } from "react";
 export const dynamic = 'force-dynamic';
 
 export const metadata = {
-    title: 'GenRaffle*',
-    description: 'GenRaffle* is a platform for creating and participating in raffles',
+    title: 'GenRaffle',
+    description: 'GenRaffle is a platform for creating and participating in raffles',
 }
 
 export default async function Home() {

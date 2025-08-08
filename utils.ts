@@ -1,5 +1,6 @@
 import { Raffle, RaffleAnswer } from "./types";
 import moment from "moment";
+import DOMPurify from 'dompurify';
 
 export function formatDate(date: string): string {
   const now = moment();
@@ -24,6 +25,13 @@ export function limitText(text: string, limit: number): string {
   }
   return text.slice(0, limit) + '...';
 }
+
+export function handleNewlines(text: string) {
+  return text.replace(/\n/g, '<br />');
+}
+export function renderHTML(html: any) {
+  return { __html: DOMPurify.sanitize(html) };
+};
 
 export function convertMapToRaffle(mapData: any): Raffle {
   const answers = new Map<string, RaffleAnswer>();
