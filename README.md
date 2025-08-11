@@ -2,6 +2,17 @@
 
 Create and participate in raffles where AI consensus determines winners based on subjective criteria. Trustless, transparent, and fair judgment at machine speed.
 
+## 🌐 Live Demo
+
+Check out the live application at: **[https://gen-raffle.vercel.app/](https://gen-raffle.vercel.app/)**
+
+The demo showcases various raffles including:
+- "Make Us Laugh Out Loud – Funniest Joke Wins"
+- "✈️ Your Most Unexpected Travel Adventure – by Airbnb"
+- "☕ Tell Us Your Craziest Coffee Moment"
+- "🍫 Break the Rules with KitKat!"
+- "Worst Travel Advice You've Ever Gotten"
+
 ## 🚀 Features
 
 - **AI-Powered Judging**: Subjective criteria evaluated by AI consensus
